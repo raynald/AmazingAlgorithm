@@ -1,42 +1,55 @@
-void compute(string W, int T[]) {
+#include<string>
+#include<iostream>
+
+using namespace std;
+
+void compute(string W, int next[]) {
     int pos = 2;
-    int cnd = 0;
-    T[0] = -1;
-    T[1] = 0;
+    int pre = 0;
+    next[0] = -1;
+    next[1] = 0;
     while(pos < W.length()) {
-        if(W[pos-1] == W[cnd]) {
-            cnd ++;
-            T[pos] = cnd;
-            pos ++;
+        if(W[pos] == W[pre]) {
+            pre ++;
+            next[pos] = pre;
+            pos++;
         }
-        else if(cnd > 0) cnd = T[cnd];
         else {
-            T[pos] = 0;
-            pos ++;
+            if(pre>0) pre = next[pre];
+            else {
+                next[pos] = 0;
+                pos ++;
+            }
         }
     }
 }
 
 int kmp_search(string S, string W) {
-    int m = 0;
-    int i = 0;
+    int pos = 0;
+    int pos_i = 0;
+    int next[W.length()];
 
-    compute();
-    while (m + i < S.length()) {
-        if(W[i] == S[m+i]) {
-            if(i == W.length() - 1) return m;
-            i ++;
+    compute(W, next);
+    while (pos + pos_i < S.length()) {
+        if(S[pos + pos_i] == W[pos_i]) {
+            if(pos_i == W.length() - 1) return pos;
+            pos_i ++;
         }
         else {
-            if(T[i] > -1) {
-                m = m + i - T[i];
-                i = T[i];
+            if(next[pos_i] > -1) {
+                pos = pos + pos_i - next[pos_i];
+                pos_i = next[pos_i];
             }
             else {
-                i = 0;
-                m ++;
+                pos_i = 0;
+                pos ++;
             }
         }
     }
+    return S.length();
+}
+
+int main() {
+    cout << kmp_search("abcabcababc", "abababc")<<endl;
 }
 
