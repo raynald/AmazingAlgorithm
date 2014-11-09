@@ -1,73 +1,68 @@
 #include<iostream>
 #include<string>
 
+using namespace std;
+
+
 class Extended_KMP {
     private:
-        const int MAXSIZE  = 400005;
-        int extend[MAXSIZE], next[MAXSIZE];
+        static const int MAXSIZE = 400005;
+        int A[MAXSIZE], B[MAXSIZE];
     public:
-        void get_next(strint t) {
-            int n = t.length();
-            int a, p, k, i;
+        int max(int x, int y) {
+            return x > y ? x : y;
+        }
 
-            next[0] = 0;
-            a = 0;
-            p = 1;
-            for (k = 1; k < n; k++) {
-                if (k == p)    {
-                    i = k;
-                    while (t[i] == t[i - k]) i++;
-                    next[k] = i - k;
-                    if (i == p) p++; else p = i;
-                    a = k;
-                }
-                else if (k + next[k - a] <= p)
-                    next[k] = next[k - a];
+        void get_next(string T) {
+            int n = T.length();
+            int rightmost, L, j, k;
+            //rightmost checked
+            j = 0;
+            while(j + 1 < n && T[j + 0] == T[j + 1]) j = j + 1;
+            A[0] = 0; 
+            A[1] = j;
+            k = 1;
+            for(int i = 2; i < n; i ++) {
+                rightmost = k + A[k] - 1;
+                L = A[i - k];
+                //T[i-k]..T[A[k]-1] == T[i]..T[rightmost]
+                if( L < rightmost - i + 1 ) A[i] = L;
                 else {
-                    next[k] = p - k;
-                    i = p;
-                    while (t[i] == t[i - k]) {
-                        i++;
-                        next[k]++;
-                    }
-                    if (i > p) {
-                        p = i;
-                        a = k;
-                    }
+                    j = max(0, rightmost - i + 1); //Attention
+                    while(i + j < n && T[i + j] == T[0 + j]) j = j + 1;
+                    A[i] = j;
+                    k = i;
                 }
             }
         }
 
-        void get_extend(string s, string t) {
-            int sn = s.length();
-            int tn = t.length();
-            int a, p, k, i;
-            
-            get_next(t);
-            p = a = 0;
-            for (k = 0; k < sn; k++) {
-                if (k == p)    {
-                    i = k;
-                    while (i - k < tn && s[i] == t[i - k]) i++;
-                    extend[k] = i - k;
-                    if (i == p) p++; else p = i;
-                    a = k;
-                }
-                else if (k + next[k - a] <= p)
-                    extend[k] = next[k - a];
+        void get_extend(string S, string T) {
+            int sn = S.length();
+            int tn = T.length();
+            int j, k, Len, L;
+
+            get_next(T);
+            j = 0;
+            while(j < sn && j < tn && T[0 + j] == S[0 + j]) j = j + 1;
+            B[0] = j;
+            k = 0;
+            for(int i = 1;i < sn; i ++) {
+                Len = k + B[k] - 1;
+                L = A[i-k];
+                if( L < Len - i + 1 ) B[i] = L;
                 else {
-                    extend[k] = p - k;
-                    i = p;
-                    while (i - k < tn && s[i] == t[i - k]) {
-                        i++;
-                        extend[k]++;
-                    }
-                    if (i > p) {
-                        p = i;
-                        a = k;
-                    }
+                    j = max(0,Len - i + 1);
+                    while(i + j < sn && j < tn && S[i + j] == T[0 + j]) j = j + 1;
+                    B[i] = j;
+                    k = i;
                 }
             }
         }
 };
+
+int main() {
+    Extended_KMP kmp;
+    kmp.get_extend("abacabacabc", "abcabcab");
+    return 0;
+}
 
