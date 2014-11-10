@@ -1,68 +1,116 @@
-#include<iostream>
-#include<vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <vector>
 
 using namespace std;
 
-struct TreeNode {
-    char val;
-    vector<TreeNode *> child;
-    TreeNode() {}
-    TreeNode(char x): val(x) {
-        child.clear();
-    }
-};
+const int ALPHABET_SIZE = 26;
 
 class Trie {
     private:
-        TreeNode *root;
-        void insert(TreeNode *node, string s) {
-            if(s.length()==0) return;
-            bool flag = 0;
-            for(int i=0; i<node->child.size();i++) {
-                if(node->child[i]->val == s[0]) {
-                    insert(node->child[i], s.substr(1));
-                    flag = 1;
-                    break;
+        struct TrieNode {
+            int value;
+            TrieNode *children[ALPHABET_SIZE];
+            TrieNode() { 
+                value = 0;
+                for(int i = 0; i < ALPHABET_SIZE; i++) {
+                    children[i] = NULL;
                 }
             }
-            if(!flag) {
-                TreeNode *tmp = new TreeNode(s[0]);
-                node->child.push_back(tmp);
-                insert(node->child[node->child.size()-1], s.substr(1));
-            }
-        }
-        bool search(TreeNode *node, string s) {
-            if(node->child.size()==0) {
-                if(s.length()==0) return 1; else return 0;
-            }
-            for(int i=0;i<node->child.size();i++){
-                if(node->child[i]->val==s[0]) {
-                    return search(node->child[i], s.substr(1));
-                }
-            }
-            return 0;
-        }
+        };
+        TrieNode *root;
+        int count;
+
     public:
         Trie() {
-            root = new TreeNode('#');
+            root = new TrieNode;
+            count = 0;
         }
-        void insert(string s) {
-            insert(root, s);
+
+        void insert(string key) {
+            int level;
+            int length = key.length();
+            int index;
+            TrieNode *pCrawl;
+
+            count++;
+            pCrawl = root;
+            for( level = 0; level < length; level++ ) {
+                index = key[level] - 'a';
+                if( pCrawl->children[index] ) 
+                    pCrawl = pCrawl->children[index];
+                else {
+                    pCrawl->children[index] = new TrieNode;
+                    pCrawl = pCrawl->children[index];
+                }
+            }
+            pCrawl->value = count;
         }
-        bool search(string s) {
-            return search(root, s);
+
+        bool search(string key) {
+            int length = key.length();
+            int index;
+
+            TrieNode *pCrawl;
+            pCrawl = root;
+            for(int level = 0; level < length; level++ ) {
+                index = key[level] - 'a';
+                if( !pCrawl->children[index] ) return 0;
+                pCrawl = pCrawl->children[index];
+            }
+            return (pCrawl!=NULL && pCrawl->value);
+        }
+
+        bool leafNode(TrieNode *pNode) {
+            return (pNode->value != 0);
+        }
+
+        bool isItFreeNode(TrieNode *pNode) {
+            for(int i = 0; i < ALPHABET_SIZE; i++) 
+                if( pNode->children[i] ) return 0;
+            return 1;
+        }
+
+        bool deleteHelper(TrieNode *pNode, string key, int level, int len) {
+            if( pNode ) {
+                if( level == len ) {
+                    if( pNode->value ) {
+                        pNode->value = 0;
+                        if( isItFreeNode(pNode) ) return true;
+                        return false;
+                    }
+                }
+                else {
+                    int index = key[level] - 'a';
+
+                    if( deleteHelper(pNode->children[index], key, level+1, len) ) {
+                        delete pNode->children[index];
+                        return ( !leafNode(pNode) && isItFreeNode(pNode) );
+                    }
+                }
+            }
+            return false;
+        }
+
+        void deleteKey(string key) {
+            int len = key.length(); 
+            if( len > 0 ) 
+                deleteHelper(root, key, 0, len);
         }
 };
 
-
 int main() {
-    Trie t;
-    t.insert("about");
-    t.insert("amount");
-    t.insert("zett");
-    cout << t.search("abo") << endl;
-    cout << t.search("aboue") << endl;
-    cout << t.search("zett") << endl;
-    cout << t.search("zatt") << endl;
+    vector<string> keys  = {"she", "sells", "sea", "shore", "the", "by", "sheer"};
+    Trie tree;
+
+    for(int i = 0; i < keys.size(); i++) {
+        tree.insert(keys[i]);
+    }
+    printf("%s %s\n", "she", tree.search("she") ? "Present in trie" : "Not present in trie");
+    tree.deleteKey(keys[0]);
+    printf("%s %s\n", "she", tree.search("she") ? "Present in trie" : "Not present in trie");
+ 
     return 0;
 }
