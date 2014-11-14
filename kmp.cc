@@ -9,7 +9,7 @@ void compute(string W, int next[]) {
     next[0] = -1;
     next[1] = 0;
     while(pos < W.length()) {
-        if(W[pos] == W[pre]) {
+        if(W[pos-1] == W[pre]) {
             pre ++;
             next[pos] = pre;
             pos++;
