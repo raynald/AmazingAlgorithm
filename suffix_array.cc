@@ -1,4 +1,3 @@
-// C++ program for building suffix array of a given text
 #include <iostream>
 #include <cstring>
 #include <algorithm>
