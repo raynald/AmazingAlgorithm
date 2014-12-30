@@ -1,14 +1,23 @@
 AmazingAlgorithm
 ================
+
+Implement Hash Table, two ways
+    next
+    hasNext
+
+Suffix Tree
+Suffix Array
+Trie
+Mutex
+
+
+
+//
 Nearest distance between points in a plane
 
 Skip List
 
 k-d tree
-
-suffix tree
-
-suffix array
 
 pairing heap
 

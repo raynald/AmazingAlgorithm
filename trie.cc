@@ -87,6 +87,7 @@ class Trie {
 
                     if( deleteHelper(pNode->children[index], key, level+1, len) ) {
                         delete pNode->children[index];
+                        pNode->children[index] = NULL;
                         return ( !leafNode(pNode) && isItFreeNode(pNode) );
                     }
                 }
