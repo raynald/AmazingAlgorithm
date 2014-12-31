@@ -5,9 +5,6 @@ Implement Hash Table, two ways
     next
     hasNext
 
-Suffix Tree
-Suffix Array
-Trie
 Mutex
 
 

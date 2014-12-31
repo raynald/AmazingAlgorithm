@@ -1,41 +1,42 @@
 #include <iostream>
+#include <vector>
 #include <string>
 #include <cstring>
 
 using namespace std;
 
-static int a[128]={0};
-
-struct TreeNode {
-    string val;
-    TreeNode *lChild;
-    TreeNode *sibling;
-    TreeNode() {
-        lChild=NULL;
-        sibling=NULL;
-    }
-};
-
-class mySuffix
-{
+class mySuffix {
+    private:
+        struct TreeNode {
+            string val;
+            TreeNode *lChild;
+            TreeNode *sibling;
+            TreeNode(): lChild(NULL), sibling(NULL) {}
+            TreeNode(string x): val(x), lChild(NULL), sibling(NULL) {}
+        };
+        TreeNode *root;
+        string str; 
+        vector<bool> v;
     public:
-        mySuffix(): root(NULL),constant_str("")  {}
+        mySuffix(): root(NULL),str("")  {}
 
         ~mySuffix() {
             if(root) DestoryTree();
             root=NULL;
         }
 
-        bool CreateTree(string& constant_str) {
+        bool CreateTree(string constant_str) {
             if (root != NULL || constant_str.size() == 0 ) return false;
-            this->constant_str=constant_str;
-            initialise();
-            scan_all_suffix();
+            str=constant_str;
+            root=new TreeNode("root");
+            for(int i=0;i<str.size();i++) {
+                 fix_suffix(this->root,str.substr(i));
+            }
             return true;
         }
 
         void DestoryTree() {
-            CylClear(root);
+            Clear(root);
             root=NULL;
         }
 
@@ -60,27 +61,8 @@ class mySuffix
             }
         }
 
-        void initialise() {
-            memset(a,0,128*sizeof(int));
-            root=new TreeNode();
-            root->val="root";
-            for(int i=0;i<constant_str.size();i++) {
-                if( a[ constant_str[i] ] == 0 ) {
-                    a[ constant_str[i] ] = 1;
-                    AddToTree(root,constant_str.substr(i));
-                }
-            }
-        }
-
-        void scan_all_suffix() {
-            for(int i=1;i<constant_str.size();i++) {
-                fix_suffix(this->root,constant_str.substr(i));
-            }
-        }
-
         void fix_suffix(TreeNode *parent,string suffix) {
             TreeNode *pnode=parent->lChild;
-            if( ! pnode ) return;
             while(pnode) {
                 if( suffix[0] == pnode->val[0] ) break;
                 pnode=pnode->sibling;
@@ -89,10 +71,9 @@ class mySuffix
                 AddToTree(parent,suffix);
                 return;
             }
-            int i=1; 
             int suffix_len=suffix.size();
             int branch_len=pnode->val.size();
-            while(1) {
+            for(int i=1;;i++) {
                 if( suffix_len < i+1 ) return;
                 if( branch_len < i+1 ) { 
                     fix_suffix(pnode,suffix.substr(i)); 
@@ -107,7 +88,6 @@ class mySuffix
                     pnode->val=pnode->val.substr(0,i);
                     return;
                 }
-                i++;
             }
         }
 
@@ -123,26 +103,23 @@ class mySuffix
             }
         }
 
-        void CylClear(TreeNode* parent) {
+        void Clear(TreeNode* parent) {
             if(parent==NULL) return;
             TreeNode *sibling=parent->sibling;
             TreeNode *temp;
             while( sibling != NULL ) {
-                if(sibling->lChild != NULL) CylClear(sibling->lChild);
+                if(sibling->lChild != NULL) Clear(sibling->lChild);
                 temp=sibling;
                 sibling=sibling->sibling;
                 delete temp;
             }
-            if( parent->lChild != NULL) CylClear(parent->lChild);
+            if( parent->lChild != NULL) Clear(parent->lChild);
             delete parent;
         }
-    private:
-        TreeNode *root;
-        string constant_str;
 };
 
 int main() {
-    std::string str="networkmanagerment";
+    std::string str="aaaaaaaa";
 
     mySuffix mytree;
     if( ! mytree.CreateTree(str) ) cout <<"fail" <<endl;
