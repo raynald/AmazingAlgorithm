@@ -12,10 +12,6 @@ Skip List
 
 k-d tree
 
-pairing heap
-
-leftist tree
-
 B tree, B+ tree
 
 Fibonacci heap
