@@ -5,10 +5,6 @@ Implement Hash Table, two ways
     next
     hasNext
 
-Mutex
-
-
-
 //
 Nearest distance between points in a plane
 
@@ -23,7 +19,3 @@ leftist tree
 B tree, B+ tree
 
 Fibonacci heap
-
-Huffman tree
-
-Gift wrapping algorithm & Graham’s Scan Algorithm
