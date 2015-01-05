@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class mySuffix {
+class SuffixTree {
     private:
         struct TreeNode {
             string val;
@@ -18,9 +18,9 @@ class mySuffix {
         string str; 
         vector<bool> v;
     public:
-        mySuffix(): root(NULL),str("")  {}
+        SuffixTree(): root(NULL),str("")  {}
 
-        ~mySuffix() {
+        ~SuffixTree() {
             if(root) DestoryTree();
             root=NULL;
         }
@@ -30,7 +30,7 @@ class mySuffix {
             str=constant_str;
             root=new TreeNode("root");
             for(int i=0;i<str.size();i++) {
-                 fix_suffix(this->root,str.substr(i));
+                 FixSuffix(this->root,str.substr(i));
             }
             return true;
         }
@@ -49,8 +49,7 @@ class mySuffix {
             if (parent == NULL ) return;
             cout << parent->val <<endl;
             parent=parent->lChild;
-            while( parent != NULL )
-            {
+            while( parent != NULL ) {
                 for(int i=0;i<whitspace;i++) cout <<"   ";
                 if(parent->sibling)
                     cout <<"├─";
@@ -61,7 +60,7 @@ class mySuffix {
             }
         }
 
-        void fix_suffix(TreeNode *parent,string suffix) {
+        void FixSuffix(TreeNode *parent,string suffix) {
             TreeNode *pnode=parent->lChild;
             while(pnode) {
                 if( suffix[0] == pnode->val[0] ) break;
@@ -76,7 +75,7 @@ class mySuffix {
             for(int i=1;;i++) {
                 if( suffix_len < i+1 ) return;
                 if( branch_len < i+1 ) { 
-                    fix_suffix(pnode,suffix.substr(i)); 
+                    FixSuffix(pnode,suffix.substr(i)); 
                     return; 
                 }
                 if( suffix[i] != pnode->val[i] ) {
@@ -96,8 +95,7 @@ class mySuffix {
             sub->val=contex;
             if( parent->lChild == NULL ) {
                 parent->lChild=sub;
-            }
-            else {
+            } else {
                 sub->sibling=parent->lChild;
                 parent->lChild=sub;
             }
@@ -121,8 +119,8 @@ class mySuffix {
 int main() {
     std::string str="aaaaaaaa";
 
-    mySuffix mytree;
-    if( ! mytree.CreateTree(str) ) cout <<"fail" <<endl;
+    SuffixTree mytree;
+    if( ! mytree.CreateTree(str) ) cout << "fail" <<endl;
     else {
         mytree.show_out();
     }
