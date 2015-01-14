@@ -1,28 +1,71 @@
-const int INF = 1<<30;
-const int DIVISOR = 1000000;
-const int MAXH=500010;
-
-int t,n,k;
-long long dp[MAXH];
-int A;
-long long tmp;
-
-template <class DType>
+template <typename DType>
 class Treap { 
-    private:
-        struct node;
-        typedef struct node *pnode;
+    public:
+        Treap () 
+        {
+            null = new struct node;
+            null->key = INF;
+            null->value = 0;
+            null->left = null;
+            null->right = null;
+            null->priority = INF;
+            root = null;
+        }
 
-        struct node {
+        ~Treap () 
+        {
+            Erase(root);
+            //delete null;
+            //delete root;
+        }
+
+        void Insert(DType key) {
+            insert_node(root, key);
+        }
+
+        void Del(DType key) {
+            delete_node(root, key);
+        }
+
+        void Print() {
+            prt(root);
+            cout << " --"<<endl;
+        }
+
+        bool Empty() {
+            return root==null;
+        }
+
+        DType Headtop() {
+            if(root==null) return 0;
+            else return root->key;
+        }
+
+        DType Find() {
+            DType left, right;
+            pnode cur;
+
+            cur = root;
+            while (cur -> left != null) {
+                cur = cur->left;
+            }
+            return cur->key;
+        }
+
+    private:
+        struct Node;
+        typedef struct Node* Pnode;
+
+        struct Node {
             DType key;
             int value;
             pnode left, right;
             int priority;
         };
 
-        pnode null, root;
+        Pnode null, root;
 
-        void right_rotate(pnode &cur) {
+        void RightRotate(pnode &cur) {
             pnode tmp;
             tmp = cur->left;
             cur->left = tmp->right;
@@ -30,7 +73,7 @@ class Treap {
             cur = tmp;
         }
 
-        void left_rotate(pnode &cur) {
+        void LeftRotate(pnode &cur) {
             pnode tmp;
             tmp = cur->right;
             cur->right = tmp->left;
@@ -38,7 +81,7 @@ class Treap {
             cur = tmp;
         }
 
-        void insert_node(pnode &cur, DType key) {
+        void InsertNode(pnode &cur, DType key) {
             if (cur == null) {
                 cur = new struct node;
                 cur->key = key;
@@ -59,7 +102,7 @@ class Treap {
                 else cur->value++;
         }
 
-        void delete_node (pnode &cur, DType key) {
+        void DeleteNode (pnode &cur, DType key) {
             if (cur != null) {
                 if (key < cur->key) delete_node(cur->left, key);
                 else 
@@ -83,13 +126,13 @@ class Treap {
             }
         }
 
-        void erase(pnode cur) {
+        void Erase(pnode cur) {
             if (cur->left != null) erase(cur->left);
             if (cur->right != null) erase(cur->right);
             delete cur;
         }
 
-        void prt(pnode cur) { 
+        void Prt(pnode cur) { 
             if(cur != null) {
                 prt(cur->left);
                 cout << cur->key1 << " " << cur->key2 << " " << cur->value << endl;
@@ -97,55 +140,4 @@ class Treap {
             }
         }
 
-    public:
-        Treap () 
-        {
-            null = new struct node;
-            null->key = INF;
-            null->value = 0;
-            null->left = null;
-            null->right = null;
-            null->priority = INF;
-            root = null;
-        }
-
-        ~Treap () 
-        {
-            erase(root);
-            //delete null;
-            //delete root;
-        }
-
-        void insert(DType key) {
-            insert_node(root, key);
-        }
-
-        void del(DType key) {
-            delete_node(root, key);
-        }
-
-        void print() {
-            prt(root);
-            cout << " --"<<endl;
-        }
-
-        bool empty() {
-            return root==null;
-        }
-
-        DType headtop() {
-            if(root==null) return 0;
-            else return root->key;
-        }
-
-        DType find() {
-            DType left, right;
-            pnode cur;
-
-            cur = root;
-            while (cur -> left != null) {
-                cur = cur->left;
-            }
-            return cur->key;
-        }
 };

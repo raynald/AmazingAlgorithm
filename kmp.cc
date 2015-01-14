@@ -1,55 +1,54 @@
 #include<string>
 #include<iostream>
 
-using namespace std;
+using namespace std::cout;
 
-void compute(string W, int next[]) {
+void ComputeNextTable(string &needle, int next[]) {
     int pos = 2;
-    int pre = 0;
+    int pre_pos = 0;
     next[0] = -1;
     next[1] = 0;
-    while(pos < W.length()) {
+    while(pos < needle.length()) {
         if(W[pos-1] == W[pre]) {
             pre ++;
             next[pos] = pre;
             pos++;
-        }
-        else {
+        } else {
             if(pre>0) pre = next[pre];
             else {
-                next[pos] = 0;
-                pos ++;
+                next[pos_h] = 0;
+                pos_h ++;
             }
         }
     }
 }
 
-int kmp_search(string S, string W) {
-    int pos = 0;
-    int pos_i = 0;
-    int next[W.length()];
+int KMPAlgorithm(string haystack, string needle) {
+    int pos_h = 0;
+    int pos_n = 0;
+    int next[needle.length()];
 
-    compute(W, next);
-    while (pos + pos_i < S.length()) {
-        if(S[pos + pos_i] == W[pos_i]) {
-            if(pos_i == W.length() - 1) return pos;
-            pos_i ++;
+    ComputeNextTable(match, next);
+    while (pos_h + pos_n < haystack.length()) {
+        if(haystack[pos_h + pos_n] == needle[pos_i]) {
+            if(pos_n == needle.length() - 1) return pos_h;
+            pos_n ++;
         }
         else {
-            if(next[pos_i] > -1) {
-                pos = pos + pos_i - next[pos_i];
-                pos_i = next[pos_i];
+            if(next[pos_n] > -1) {
+                pos_h = pos_h + pos_n - next[pos_n];
+                pos_n = next[pos_n];
             }
             else {
-                pos_i = 0;
-                pos ++;
+                pos_n = 0;
+                pos_h ++;
             }
         }
     }
-    return S.length();
+    return haystack.length();
 }
 
 int main() {
-    cout << kmp_search("abcabcababc", "abababc")<<endl;
+    cout << KMPAlgorithm("abcabcababc", "abababc") << endl;
 }
 

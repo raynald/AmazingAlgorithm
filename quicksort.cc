@@ -2,10 +2,10 @@
 
 using namespace std;
 
-int n;
-int a[10010];
+int num;
+int array[10010];
 
-void qsort(int left, int right) {
+void Qsort(int left, int right) {
     if(left==right) return;
     int i = left;
     int j = right;
@@ -23,17 +23,17 @@ void qsort(int left, int right) {
         }
     }
     a[i] = mid;
-    if (i>left) qsort(left, i-1);
-    if (j<right) qsort(j+1, right);
+    if (i>left) Qsort(left, i-1);
+    if (j<right) Qsort(j+1, right);
 }
 
 int main() {
     freopen("in.txt","r",stdin);
-    cin >> n;
-    for(int i=1;i<=n;i++)
+    cin >> num;
+    for(int i=1;i<=num;i++)
         cin >> a[i];
-    qsort(1, n);
-    for(int i=1;i<=n;i++)
-        cout << a[i] << " ";
+    Qsort(1, num);
+    for(int i=1;i<=num;i++)
+        cout << array[i] << " ";
     cout << endl;
 }
