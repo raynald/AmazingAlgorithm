@@ -18,9 +18,8 @@ struct cmp {
 };
 
 //Like Tetris
-int find() {
+void find() {
     /* Compute the candidate elements in one pass. */
-    cmp mat[k];
 
     for(int i=0;i<N;i++) {
         got = mmap.find(A[i]);
@@ -31,11 +30,14 @@ int find() {
             mmap.insert(pair<int, int>(A[i],1));
         }
         if(mmap.size()==k) {
-            for(got = mmap.begin();got!=mmap.end();got++) {
+            for(got = mmap.begin();got!=mmap.end();) {
                 if(got->second==1) {
-                    mmap.erase(got->first);
+                    mmap.erase(got++);
                 }
-                else got->second--;
+                else {
+                    got->second--;
+                    got++;
+                }
             }
         }
     }
@@ -48,10 +50,10 @@ int find() {
             got->second++;
         }
     }
-    for(got = mmap.begin();got!=mmap.end();got++) {
+    for(got = mmap.begin();got!=mmap.end();) {
         if(got->second<N/k+1) {
-            mmap.erase(got->first);
-        }
+            mmap.erase(got++);
+        } else got++;
     }
 }
 
@@ -61,7 +63,7 @@ int main() {
     for(int i=0;i<N;i++) {
         cin >> A[i];
     }
-    int M = find();
+    find();
     for(got = mmap.begin();got!=mmap.end();got++) {
         cout << got->first <<endl;
     }
