@@ -10,8 +10,6 @@ Nearest distance between points in a plane
 
 Skip List
 
-k-d tree
-
 B tree, B+ tree
 
 Fibonacci heap
