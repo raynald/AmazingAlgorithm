@@ -32,7 +32,6 @@ class KMP {
         p ++;
       } else {
         if (next[q] >= 0) {
-          p = p + q - next[q];
           q = next[q];
         } else {
           next[p] = 0;
