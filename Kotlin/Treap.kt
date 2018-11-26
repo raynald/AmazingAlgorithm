@@ -1,15 +1,13 @@
-import kotlin.math.absoluteValue
-import kotlin.math.sqrt
+import java.util.*
 
 class Treap {
-    private data class Node(var key: Int, var left: Node?, var right: Node?) {
-    }
+    data class Node(var key: Int, var count: Int = 1, var priority: Int, var left: Node? = null, var right: Node? = null)
 
-    private val NULL: Node = Node(Int.MIN_VALUE, null, null)
-    private var root: Node = NULL
+    private var root: Node? = null
+    private val ran = Random()
 
     fun insert(value: Int) {
-        insert(root, value)
+        root = insert(root, value)
     }
 
     fun delete(value: Int) {
@@ -17,28 +15,66 @@ class Treap {
     }
 
     fun isEmpty(): Boolean {
-        return root == NULL
+        return root == null
     }
 
     fun contains(value: Int): Boolean {
-        var x = 10
-        x.absoluteValue
-        sqrt(x.toDouble())
+        return contains(root, value)
     }
 
-    private fun insert(node: Node, value: Int): Node {
+    private fun contains(node: Node?, value: Int): Boolean {
         when {
-            node == NULL -> {
-                return Node(value, NULL, NULL)
+            node == null -> return false
+            node.key == value -> return true
+            node.key < value -> return contains(node.right, value)
+            else -> return contains(node.left, value)
+        }
+    }
+
+    private fun insert(node: Node?, value: Int): Node {
+        when {
+            node == null -> return Node(value, 1, ran.nextInt(100))
+            node.key < value -> {
+                node.right = insert(node.right, value)
+                if (node.priority < node.right!!.priority) {
+                    leftRotate(node)
+                }
             }
-            node.key < value -> node.right = insert(node.right!!, value)
-            else -> node.left = insert(node.left!!, value)
+            node.key > value -> {
+                node.left = insert(node.left, value)
+                if (node.left!!.priority < node.priority) {
+                    rightRotate(node)
+                }
+            }
+            else -> node.count ++
         }
         return node
     }
 
     private fun delete(node: Node?, value: Int): Node? {
-
+        when {
+            node == null -> return null
+            node.key == value -> {
+                when {
+                    node.count > 1 -> node.count --
+                    node.left == null && node.right == null -> return null
+                    node.left == null -> return node.right
+                    node.right == null -> return node.left
+                    else -> {
+                        if (node.left!!.priority < node.right!!.priority) {
+                            rightRotate(node)
+                            node.right = delete(node.right, value)
+                        } else {
+                            leftRotate(node)
+                            node.left = delete(node.left, value)
+                        }
+                    }
+                }
+            }
+            node.key < value -> node.right = delete(node.right, value)
+            else -> node.left = delete(node.left, value)
+        }
+        return node
     }
 
     private fun leftRotate(node: Node): Node {
