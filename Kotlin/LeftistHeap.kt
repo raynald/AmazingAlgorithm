@@ -1,6 +1,5 @@
 class LeftistHeap {
-    internal class LeftistNode(val element: Long, var left: LeftistNode? = null, var right: LeftistNode? = null, var s: Int = 0) {
-    }
+    internal class LeftistNode(val element: Long, var left: LeftistNode? = null, var right: LeftistNode? = null, var s: Int = 0)
 
     private var root: LeftistNode?
 
@@ -13,8 +12,10 @@ class LeftistHeap {
     }
 
     fun peek(): Long {
-        if (root == null) return -1
-        else return root!!.element
+        return when (root) {
+            null -> -1
+            else -> root!!.element
+        }
     }
 
     fun add(num: Long) {
@@ -36,12 +37,12 @@ class LeftistHeap {
         return when {
             h1 == null -> h2
             h2 == null -> h1
-            h1.element < h2.element -> merge1(h1, h2)
-            else -> merge1(h2, h1)
+            h1.element < h2.element -> mergeHelper(h1, h2)
+            else -> mergeHelper(h2, h1)
         }
     }
 
-    private fun merge1(h1: LeftistNode, h2: LeftistNode): LeftistNode {
+    private fun mergeHelper(h1: LeftistNode, h2: LeftistNode): LeftistNode {
         if (h1.left == null) h1.left = h2
         else {
             h1.right = merge(h1.right, h2)
